@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Check your result</title>
+    <style>
+        .container {
+            max-width: 600px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .text-link {
+            cursor: pointer;
+            color: black;
+            text-decoration: none;
+            background-color: #ffaaaa;
+        }
+        .text-link:hover, :target {
+            background-color: #ffffaa;
+        }
+        p {
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p>
+        {% for text, result in data %}
+            {% if result != None %}
+                <span data-hash="{{ result }}" class="text-link">{{ text }}</span>
+            {% else %}
+                <span>{{ text }}</span>
+            {% endif %}
+        {% endfor %}
+    </p>
+
+    <h4>Score: {{ score }}% Plagiarism</h4>
+    <table border="1" cellspacing="0" cellpadding="5" width="100%">
+        <thead>
+        <tr>
+            <th width="10%">No.</th>
+            <th>Title</th>
+            <th width="10%">Percentage</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key, list in reports %}
+            <tr>
+                <th>{{ loop.index }}.</th>
+                <th colspan="2">{{ list[0]['title'] }}</th>
+            </tr>
+            {% for item in list %}
+                <tr id="{{ item['id'] }}">
+                    <td colspan="2">{{ item['text'] }}</td>
+                    <td align="center">{{ item['distance'] }}%</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+
+        {% if score == 0 %}
+            <tr>
+                <td colspan="3" align="center">No data</td>
+            </tr>
+        {% endif %}
+
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+    const links = document.querySelectorAll('.text-link');
+    links.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const hash = this.getAttribute('data-hash');
+            location.replace(`#${hash}`);
+        });
+    });
+</script>
+</html>
